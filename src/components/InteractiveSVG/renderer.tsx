@@ -91,6 +91,7 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
     svg.selectAll('path')
     .transition()
       .duration(500)
+      .attr('tabindex', 0)
       .attr('fill', function() {
         const id = d3.select(this).attr('id');
         const group = parsedImageData?.shapes?.[activeGroup ?? ''];
