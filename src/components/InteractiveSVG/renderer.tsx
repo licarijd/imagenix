@@ -8,7 +8,12 @@ import { usePolygons } from '@imagenix/imagenix-core/dist';
 import { imageDataType } from './types';
 import { InteractiveSVG } from '.';
 
-type EventHandlers = { handleClick: (event: React.MouseEvent) => void; handleMouseMove?: (event: React.MouseEvent) => void; handleMouseUp?: (event: React.MouseEvent) => void; }
+type EventHandlers = {
+  handleClick: (event: React.MouseEvent) => void;
+  handleMouseMove?: (event: React.MouseEvent) => void;
+  handleSelect?: (event: React.SyntheticEvent) => void;
+  handleMouseUp?: (event: React.MouseEvent) => void;
+}
 
 interface InteractiveImageRendererProps {
   imageData: imageDataType;

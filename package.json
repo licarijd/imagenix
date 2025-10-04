@@ -1,6 +1,6 @@
 {
   "name": "@imagenix/imagenix-web",
-  "version": "0.0.7",
+  "version": "0.1.1",
   "private": false,
   "files": [
     "dist"
@@ -15,7 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@imagenix/imagenix-core": "^0.1.6",
+    "@imagenix/imagenix-core": "^0.1.7",
     "d3": "^7.9.0",
     "react": "^18",
     "react-dom": "^18"
