@@ -1,6 +1,6 @@
 {
   "name": "@imagenix/imagenix",
-  "version": "0.1.3",
+  "version": "0.0.1",
   "private": false,
   "publishConfig": {
     "access": "restricted"
