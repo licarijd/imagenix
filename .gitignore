@@ -35,3 +35,25 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+dist/index.d.ts
+dist/index.js
+dist/components/index.d.ts
+dist/components/index.js
+dist/components/InteractiveSVG/index.d.ts
+dist/components/InteractiveSVG/index.js
+dist/components/InteractiveSVG/InteractiveSVG.d.ts
+dist/components/InteractiveSVG/InteractiveSVG.js
+dist/components/InteractiveSVG/renderer.d.ts
+dist/components/InteractiveSVG/renderer.js
+dist/components/InteractiveSVG/types.d.ts
+dist/components/InteractiveSVG/types.js
+dist/contexts/EllipsesContext.d.ts
+dist/contexts/EllipsesContext.js
+dist/contexts/index.d.ts
+dist/contexts/index.js
+dist/contexts/PolygonsContext.d.ts
+dist/contexts/PolygonsContext.js
+dist/types/editor.d.ts
+dist/types/editor.js
+dist/types/index.d.ts
+dist/types/index.js

@@ -1,6 +1,6 @@
 {
   "name": "@imagenix/imagenix",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "publishConfig": {
     "access": "restricted"
@@ -22,6 +22,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
+    "terser": "^5.44.0",
     "typescript": "^5"
   }
 }
