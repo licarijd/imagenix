@@ -19,8 +19,7 @@ interface InteractiveImageRendererProps {
   frameKey: string
 }
 
-const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, activeGroup, dimensions }) => {
-  console.log('dimensions', dimensions);
+export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, activeGroup, dimensions }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const {
     ellipses,
@@ -133,5 +132,3 @@ const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ fra
     </InteractiveSVG>
   );
 };
-
-export default InteractiveImageRenderer;

@@ -1,6 +1,6 @@
 {
-  "name": "@imagenix/imagenix",
-  "version": "0.0.3",
+  "name": "@imagenix/imagenix-web",
+  "version": "0.0.6",
   "private": false,
   "files": [
     "dist"
