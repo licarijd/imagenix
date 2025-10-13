@@ -20,11 +20,11 @@ interface InteractiveImageRendererProps {
   imageUrl: string;
   eventHandlerMap: { shapes: { [key: string]: EventHandlers; }; ellipses: { [key: string]: EventHandlers; } };
   activeGroup: string | null;
-  dimensions: { width: number; height: number };
+  width: number;
   frameKey: string
 }
 
-export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, activeGroup, dimensions }) => {
+export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, activeGroup, width }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const {
     ellipses,
@@ -38,6 +38,8 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
   const hasDrawnShapes = useRef(false);
 
   const parsedImageData: imageDataType = useMemo(() => imageData, [imageData]);
+
+  const ratio = useMemo(() => width / parsedImageData.size?.x, [width, parsedImageData.size?.x]);
 
   const handleDrawShapes = useCallback((shapes: Polygon[]) => {
     for (const shape of shapes) {
@@ -67,14 +69,14 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
     }
 
     const svg = d3.select(svgRef.current);
-    const scaleX = dimensions.width / parsedImageData.size?.x;
-    const scaleY = dimensions.height / parsedImageData.size?.y;
+    const scaleX = ratio;
+    const scaleY = ratio;
 
     svg.select('g')
       .attr("transform", `scale(${scaleX}, ${scaleY})`);
 
     hasDrawnShapes.current = true;
-  }, [parsedImageData, svgRef, setEllipses, setShapes, setPoints, handleDrawShapes, dimensions.width, dimensions.height, ellipses]);
+  }, [parsedImageData, svgRef, setEllipses, setShapes, setPoints, handleDrawShapes, ellipses, width, ratio]);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -120,8 +122,8 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
     <InteractiveSVG
       frameKey={frameKey}
       svgRef={svgRef}
-      x={dimensions.width}
-      y={dimensions.height}
+      x={width}
+      y={ratio * parsedImageData.size?.y}
       imageUrl={imageUrl}
     >
     {/* Render existing ellipses */}
