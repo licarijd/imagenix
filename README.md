@@ -1,4 +1,4 @@
-# Creating Imagenix Images: Complete Guide
+# Creating Imagenix.Dev Images: Complete Guide
 
 This comprehensive guide explains how to create interactive images using Imagenix and integrate them into your applications using the `InteractiveImageRenderer` component.
 
@@ -13,7 +13,7 @@ This comprehensive guide explains how to create interactive images using Imageni
 
 ## Overview
 
-Imagenix allows you to transform static images into interactive experiences by adding clickable areas and hover effects. The process involves:
+Imagenix.Dev allows you to transform static images into interactive experiences by adding clickable areas and hover effects. The process involves:
 
 1. **Creating**: Upload an image to [https://imagenix.dev/editor](https://imagenix.dev/editor) and draw interactive areas
 2. **Exporting**: Download the JSON configuration file
@@ -166,15 +166,13 @@ import { imageDataType } from '@imagenix/imagenix-web';
 interface InteractiveImageProps {
   imageUrl: string;
   imageData: imageDataType;
-  width: number;
-  height: number;
+  width: number; // image height will be set based on the original ratio
 }
 
 const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
   imageUrl,
   imageData,
   width,
-  height
 }) => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
@@ -222,7 +220,7 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
         imageData={imageData}
         eventHandlerMap={eventHandlerMap}
         activeGroup={activeGroup}
-        dimensions={{ width, height }}
+        width={width}
       />
       
       {/* Optional: Display active group information */}
@@ -247,7 +245,7 @@ export default MyInteractiveImage;
 | `imageData` | `imageDataType` | JSON configuration from Imagenix editor | ✅ |
 | `eventHandlerMap` | `EventHandlerMap` | Object containing click/hover handlers | ✅ |
 | `activeGroup` | `string \| null` | Currently active/selected group | ✅ |
-| `dimensions` | `{ width: number; height: number }` | Display dimensions (must match image ratio) | ✅ |
+| `width` | `number` | The width of the display image (this is used to auto-calculate and set the height of the display image, based on the original aspect ration) | ✅ |
 
 ## Complete Code Examples
 
@@ -265,11 +263,12 @@ const CarInteractiveDemo: React.FC = () => {
 
   // Parse the car data
   const imageData = JSON.parse(carData);
+
+  // This MUST be the same image that you used in the editor!
   const imageUrl = "https://example.com/car-image.jpg";
   const groups = ['hood', 'windows', 'wheels'];
   
-  // Dimensions must maintain the original image ratio (1400:800 = 1.75:1)
-  const dimensions = { width: 700, height: 400 }; // Maintains 1.75:1 ratio
+  const width = 700
 
   const eventHandlerMap = useMemo(() => {
     const shapes = {};
@@ -321,7 +320,7 @@ const CarInteractiveDemo: React.FC = () => {
           imageData={imageData}
           eventHandlerMap={eventHandlerMap}
           activeGroup={activeGroup ?? previewGroup}
-          dimensions={dimensions}
+          width={width}
         />
       </div>
 
@@ -359,11 +358,12 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
   const imageData = JSON.parse(refrigeratorData);
+
+  // This MUST be the same image that you used in the editor!
   const imageUrl = "https://example.com/refrigerator-image.jpg";
   const groups = ['door', 'top-screen', 'bottom-screen', 'shelves'];
   
-  // Original image ratio: 1024:1536 = 2:3
-  const dimensions = { width: 400, height: 600 }; // Maintains 2:3 ratio
+  const width = 700
 
   const eventHandlerMap = useMemo(() => {
     const shapes = {};
@@ -431,7 +431,7 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
             imageData={imageData}
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
-            dimensions={dimensions}
+            width={width}
           />
         </div>
 
@@ -476,11 +476,12 @@ const FloorPlanInteractiveDemo: React.FC = () => {
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
 
   const imageData = floorPlan;
+
+  // This MUST be the same image that you used in the editor!
   const imageUrl = "https://example.com/floor-plan.jpg";
   const groups = ['bathrooms', 'bedrooms'];
   
-  // Original image ratio: 1400:800 = 1.75:1
-  const dimensions = { width: 875, height: 500 }; // Maintains 1.75:1 ratio
+  const width = 875
 
   const eventHandlerMap = useMemo(() => {
     const shapes = {};
@@ -541,7 +542,7 @@ const FloorPlanInteractiveDemo: React.FC = () => {
             imageData={imageData}
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
-            dimensions={dimensions}
+            width={width}
           />
         </div>
 
@@ -583,17 +584,8 @@ export default FloorPlanInteractiveDemo;
 
 ## Best Practices
 
-### 1. Maintain Image Aspect Ratios
-Always ensure your display dimensions maintain the original image aspect ratio:
-
-```tsx
-// Calculate proper dimensions
-const originalRatio = imageData.size.x / imageData.size.y;
-const displayWidth = 800; // Your desired width
-const displayHeight = displayWidth / originalRatio;
-
-const dimensions = { width: displayWidth, height: displayHeight };
-```
+### 1. You MUST render the same image with InteractiveImageRenderer that you used in the editor. If you edit your original image, then just create a new
+interactive image for that image.
 
 ### 2. Optimize Event Handlers
 Use `useMemo` to prevent unnecessary re-renders:
@@ -677,9 +669,9 @@ useEffect(() => {
 
 ## Conclusion
 
-The Imagenix platform makes it easy to create interactive images that enhance user engagement. By following this guide and using the provided code examples, you can:
+The Imagenix.Dev platform makes it easy to create interactive images that enhance user engagement. By following this guide and using the provided code examples, you can:
 
-1. Create interactive images in the Imagenix editor
+1. Create interactive images in the Imagenix.Dev editor
 2. Export the configuration JSON
 3. Integrate them into your React applications
 4. Handle user interactions with custom event handlers
