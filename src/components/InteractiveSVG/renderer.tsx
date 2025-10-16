@@ -98,7 +98,10 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
     svg.selectAll('path')
     .transition()
       .duration(500)
-      .attr('tabindex', 0)
+      .attr('tabindex', function() {
+        const id = d3.select(this).attr('id');
+        return !!id ? 0 : -1; // if the path has an id, make it focusable, otherwise make it not focusable
+      })
       .attr('fill', function() {
         const id = d3.select(this).attr('id');
         const group = parsedImageData?.shapes?.[activeGroup ?? ''];
