@@ -111,9 +111,9 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
         const id = d3.select(this).attr('id');
         const group = parsedImageData?.shapes?.[activeGroup ?? ''];
 
-        if (!group) return 0.01;
+        if (!group) return 0;
 
-        return id?.includes(activeGroup ?? '') ? 0.20 : 0.01;
+        return id?.includes(activeGroup ?? '') ? 0.40 : 0;
       })
       .style("filter", "url(#blur)");
   }, [activeGroup, parsedImageData, svgRef]);
