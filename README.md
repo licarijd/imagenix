@@ -173,6 +173,7 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
   imageUrl,
   imageData,
   width,
+  descriptions
 }) => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
@@ -212,6 +213,16 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
     return { shapes, ellipses };
   }, [imageData]);
 
+  const ariaLabelMap = useMemo(() => {
+    const ariaLabels: Record<string, string> = {};
+    Object.entries(descriptions).forEach(([key, description]) => {
+      if (description) {
+        ariaLabels[key] = description;
+      }
+    });
+    return ariaLabels;
+  }, [descriptions]);
+
   return (
     <div className="interactive-image-container">
       <InteractiveImageRenderer
@@ -221,6 +232,7 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
         eventHandlerMap={eventHandlerMap}
         activeGroup={activeGroup}
         width={width}
+        ariaLabelMap={ariaLabelMap}
       />
       
       {/* Optional: Display active group information */}
@@ -246,6 +258,32 @@ export default MyInteractiveImage;
 | `eventHandlerMap` | `EventHandlerMap` | Object containing click/hover handlers | ✅ |
 | `activeGroup` | `string \| null` | Currently active/selected group | ✅ |
 | `width` | `number` | The width of the display image (this is used to auto-calculate and set the height of the display image, based on the original aspect ration) | ✅ |
+| `ariaLabelMap` | `{ [key: string]: string }` | Object mapping group names to accessibility labels for screen readers | ❌ |
+
+### Accessibility with ariaLabelMap
+
+The `ariaLabelMap` prop provides accessibility labels for interactive areas, making your interactive images accessible to users with screen readers and other assistive technologies.
+
+**Usage:**
+```tsx
+const ariaLabelMap = {
+  'hood': 'Car hood - click to learn about the engine compartment',
+  'windows': 'Car windows - click to learn about glass features',
+  'wheels': 'Car wheels - click to learn about tire specifications'
+};
+
+<InteractiveImageRenderer
+  // ... other props
+  ariaLabelMap={ariaLabelMap}
+/>
+```
+
+**Best Practices:**
+- Use descriptive, actionable language
+- Keep labels concise but informative
+- Include the action users can take (e.g., "click to learn more")
+- Map each group name from your image data to a meaningful description
+- Test with screen readers to ensure clarity
 
 ## Complete Code Examples
 
@@ -309,6 +347,16 @@ const CarInteractiveDemo: React.FC = () => {
     return descriptions[group as keyof typeof descriptions] || 'No description available.';
   };
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    const descriptions = {
+      hood: "Car hood - click to learn about the engine compartment and aluminum construction",
+      windows: "Car windows - click to learn about premium glass features and UV protection",
+      wheels: "Car wheels - click to learn about high-performance alloy wheels and traction control"
+    };
+    return descriptions;
+  }, []);
+
   return (
     <div className="car-demo">
       <h2>Interactive Car Demo</h2>
@@ -320,6 +368,7 @@ const CarInteractiveDemo: React.FC = () => {
           imageData={imageData}
           eventHandlerMap={eventHandlerMap}
           activeGroup={activeGroup ?? previewGroup}
+          ariaLabelMap={ariaLabelMap}
           width={width}
         />
       </div>
@@ -419,6 +468,16 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
 
   const currentInfo = activeGroup ? getComponentInfo(activeGroup) : null;
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    return {
+      'door': 'Smart refrigerator door - click to learn about LED lighting and temperature control',
+      'top-screen': 'Control panel - click to learn about touchscreen interface and settings',
+      'bottom-screen': 'Food management display - click to learn about inventory tracking and recommendations',
+      'shelves': 'Adjustable shelves - click to learn about flexible storage options'
+    };
+  }, []);
+
   return (
     <div className="refrigerator-demo">
       <h2>Smart Refrigerator Demo</h2>
@@ -432,6 +491,7 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
             width={width}
+            ariaLabelMap={ariaLabelMap}
           />
         </div>
 
@@ -530,6 +590,14 @@ const FloorPlanInteractiveDemo: React.FC = () => {
   const currentInfo = activeGroup ? getRoomInfo(activeGroup) : null;
   const hoveredInfo = hoveredGroup ? getRoomInfo(hoveredGroup) : null;
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    return {
+      'bathrooms': 'Bathrooms - click to learn about bathroom features and specifications',
+      'bedrooms': 'Bedrooms - click to learn about bedroom features and specifications'
+    };
+  }, []);
+
   return (
     <div className="floor-plan-demo">
       <h2>Interactive Floor Plan</h2>
@@ -543,6 +611,7 @@ const FloorPlanInteractiveDemo: React.FC = () => {
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
             width={width}
+            ariaLabelMap={ariaLabelMap}
           />
         </div>
 
