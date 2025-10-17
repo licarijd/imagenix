@@ -19,12 +19,13 @@ interface InteractiveImageRendererProps {
   imageData: imageDataType;
   imageUrl: string;
   eventHandlerMap: { shapes: { [key: string]: EventHandlers; }; ellipses: { [key: string]: EventHandlers; } };
+  ariaLabelMap: { [key: string]: string };
   activeGroup: string | null;
   width: number;
   frameKey: string
 }
 
-export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, activeGroup, width }) => {
+export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> = ({ frameKey, imageData, imageUrl, eventHandlerMap, ariaLabelMap, activeGroup, width }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const {
     ellipses,
@@ -54,9 +55,10 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
         curveType,
         colourSchema: shape.colourSchema ?? { default: 'lightgreen', active: 'orange' },
         eventHandlers: eventHandlerMap.shapes[shape.group],
+        ariaLabel: ariaLabelMap[shape.group],
       });
     }
-  }, [svgRef, setPoints, setShapes, curveType, eventHandlerMap.shapes]);
+  }, [svgRef, setPoints, setShapes, curveType, eventHandlerMap.shapes, ariaLabelMap]);
 
   // draw the shapes and ellipses when they are loaded into the tool
   useEffect(() => {
@@ -118,8 +120,8 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
 
         return id?.includes(activeGroup ?? '') ? 0.40 : 0;
       })
-      .style("filter", "url(#blur)");
-  }, [activeGroup, parsedImageData, svgRef]);
+      .style("filter", "url(#blur)")
+  }, [activeGroup, parsedImageData, svgRef, ariaLabelMap]);
 
   return (
     <InteractiveSVG
@@ -138,6 +140,7 @@ export const InteractiveImageRenderer: React.FC<InteractiveImageRendererProps> =
         colourSchema={parsedImageData.ellipses?.[ellipse.group].colourSchema ?? { default: 'blue', active: 'blue' }}
         activeGroup={activeGroup}
         eventHandlers={eventHandlerMap.ellipses[ellipse.group]}
+        ariaLabel={ariaLabelMap[ellipse.group]}
       />
     ))}
     </InteractiveSVG>
