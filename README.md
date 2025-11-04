@@ -1,6 +1,8 @@
-# Creating Imagenix.Dev Images: Complete Guide
+# Creating Imagenix.Dev Images for React Projects: Complete Guide
 
-This comprehensive guide explains how to create interactive images using Imagenix and integrate them into your applications using the `InteractiveImageRenderer` component.
+This comprehensive guide explains how to create interactive images using Imagenix and integrate them into your React applications using the `InteractiveImageRenderer` component.
+
+> **Note**: This is a React package. Imagenix.Dev is designed specifically for React projects.
 
 ## Table of Contents
 
@@ -13,16 +15,16 @@ This comprehensive guide explains how to create interactive images using Imageni
 
 ## Overview
 
-Imagenix.Dev allows you to transform static images into interactive experiences by adding clickable areas and hover effects. The process involves:
+Imagenix.Dev is a React package that allows you to transform static images into interactive experiences by adding clickable areas and hover effects in your React applications. The process involves:
 
-1. **Creating**: Upload an image to [https://imagenix.dev/editor](https://imagenix.dev/editor) and draw interactive areas
+1. **Creating**: Upload an image to [https://imagenix.dev/editor](https://imagenix.dev/editor) (designed for React projects) and draw interactive areas
 2. **Exporting**: Download the JSON configuration file
-3. **Integrating**: Use the `InteractiveImageRenderer` component in your application
+3. **Integrating**: Use the `InteractiveImageRenderer` component in your React application
 
 ## Creating an Interactive Image
 
 ### Step 1: Access the Editor
-Visit [https://imagenix.dev/editor](https://imagenix.dev/editor) and sign in with your Google account.
+Visit [https://imagenix.dev/editor](https://imagenix.dev/editor) (for React projects) and sign in with your Google account.
 
 ### Step 2: Upload Your Image
 1. Click "Upload Image" and select your image file
@@ -152,6 +154,7 @@ The `InteractiveImageRenderer` component is the core component for displaying in
 
 ### Installation
 
+Install the React package:
 ```bash
 npm install @imagenix/imagenix-web
 ```
@@ -173,6 +176,7 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
   imageUrl,
   imageData,
   width,
+  descriptions
 }) => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
@@ -212,6 +216,16 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
     return { shapes, ellipses };
   }, [imageData]);
 
+  const ariaLabelMap = useMemo(() => {
+    const ariaLabels: Record<string, string> = {};
+    Object.entries(descriptions).forEach(([key, description]) => {
+      if (description) {
+        ariaLabels[key] = description;
+      }
+    });
+    return ariaLabels;
+  }, [descriptions]);
+
   return (
     <div className="interactive-image-container">
       <InteractiveImageRenderer
@@ -221,6 +235,7 @@ const MyInteractiveImage: React.FC<InteractiveImageProps> = ({
         eventHandlerMap={eventHandlerMap}
         activeGroup={activeGroup}
         width={width}
+        ariaLabelMap={ariaLabelMap}
       />
       
       {/* Optional: Display active group information */}
@@ -246,8 +261,36 @@ export default MyInteractiveImage;
 | `eventHandlerMap` | `EventHandlerMap` | Object containing click/hover handlers | ✅ |
 | `activeGroup` | `string \| null` | Currently active/selected group | ✅ |
 | `width` | `number` | The width of the display image (this is used to auto-calculate and set the height of the display image, based on the original aspect ration) | ✅ |
+| `ariaLabelMap` | `{ [key: string]: string }` | Object mapping group names to accessibility labels for screen readers | ❌ |
+
+### Accessibility with ariaLabelMap
+
+The `ariaLabelMap` prop provides accessibility labels for interactive areas, making your interactive images accessible to users with screen readers and other assistive technologies.
+
+**Usage:**
+```tsx
+const ariaLabelMap = {
+  'hood': 'Car hood - click to learn about the engine compartment',
+  'windows': 'Car windows - click to learn about glass features',
+  'wheels': 'Car wheels - click to learn about tire specifications'
+};
+
+<InteractiveImageRenderer
+  // ... other props
+  ariaLabelMap={ariaLabelMap}
+/>
+```
+
+**Best Practices:**
+- Use descriptive, actionable language
+- Keep labels concise but informative
+- Include the action users can take (e.g., "click to learn more")
+- Map each group name from your image data to a meaningful description
+- Test with screen readers to ensure clarity
 
 ## Complete Code Examples
+
+All examples below are for React projects using the Imagenix.Dev React package.
 
 ### Example 1: Car Interactive Image
 
@@ -309,6 +352,16 @@ const CarInteractiveDemo: React.FC = () => {
     return descriptions[group as keyof typeof descriptions] || 'No description available.';
   };
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    const descriptions = {
+      hood: "Car hood - click to learn about the engine compartment and aluminum construction",
+      windows: "Car windows - click to learn about premium glass features and UV protection",
+      wheels: "Car wheels - click to learn about high-performance alloy wheels and traction control"
+    };
+    return descriptions;
+  }, []);
+
   return (
     <div className="car-demo">
       <h2>Interactive Car Demo</h2>
@@ -320,6 +373,7 @@ const CarInteractiveDemo: React.FC = () => {
           imageData={imageData}
           eventHandlerMap={eventHandlerMap}
           activeGroup={activeGroup ?? previewGroup}
+          ariaLabelMap={ariaLabelMap}
           width={width}
         />
       </div>
@@ -419,6 +473,16 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
 
   const currentInfo = activeGroup ? getComponentInfo(activeGroup) : null;
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    return {
+      'door': 'Smart refrigerator door - click to learn about LED lighting and temperature control',
+      'top-screen': 'Control panel - click to learn about touchscreen interface and settings',
+      'bottom-screen': 'Food management display - click to learn about inventory tracking and recommendations',
+      'shelves': 'Adjustable shelves - click to learn about flexible storage options'
+    };
+  }, []);
+
   return (
     <div className="refrigerator-demo">
       <h2>Smart Refrigerator Demo</h2>
@@ -432,6 +496,7 @@ const RefrigeratorInteractiveDemo: React.FC = () => {
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
             width={width}
+            ariaLabelMap={ariaLabelMap}
           />
         </div>
 
@@ -530,6 +595,14 @@ const FloorPlanInteractiveDemo: React.FC = () => {
   const currentInfo = activeGroup ? getRoomInfo(activeGroup) : null;
   const hoveredInfo = hoveredGroup ? getRoomInfo(hoveredGroup) : null;
 
+  // Create accessibility labels for screen readers
+  const ariaLabelMap = useMemo(() => {
+    return {
+      'bathrooms': 'Bathrooms - click to learn about bathroom features and specifications',
+      'bedrooms': 'Bedrooms - click to learn about bedroom features and specifications'
+    };
+  }, []);
+
   return (
     <div className="floor-plan-demo">
       <h2>Interactive Floor Plan</h2>
@@ -543,6 +616,7 @@ const FloorPlanInteractiveDemo: React.FC = () => {
             eventHandlerMap={eventHandlerMap}
             activeGroup={activeGroup}
             width={width}
+            ariaLabelMap={ariaLabelMap}
           />
         </div>
 
@@ -582,13 +656,13 @@ const FloorPlanInteractiveDemo: React.FC = () => {
 export default FloorPlanInteractiveDemo;
 ```
 
-## Best Practices
+## Best Practices for React Projects
 
 ### 1. You MUST render the same image with InteractiveImageRenderer that you used in the editor. If you edit your original image, then just create a new
 interactive image for that image.
 
-### 2. Optimize Event Handlers
-Use `useMemo` to prevent unnecessary re-renders:
+### 2. Optimize Event Handlers in React
+Use `useMemo` to prevent unnecessary re-renders in your React component:
 
 ```tsx
 const eventHandlerMap = useMemo(() => {
@@ -669,11 +743,11 @@ useEffect(() => {
 
 ## Conclusion
 
-The Imagenix.Dev platform makes it easy to create interactive images that enhance user engagement. By following this guide and using the provided code examples, you can:
+The Imagenix.Dev platform (for React projects) makes it easy to create interactive images that enhance user engagement in your React applications. By following this guide and using the provided code examples, you can:
 
-1. Create interactive images in the Imagenix.Dev editor
+1. Create interactive images in the Imagenix.Dev editor (React-focused)
 2. Export the configuration JSON
-3. Integrate them into your React applications
+3. Integrate them into your React applications using the `InteractiveImageRenderer` component
 4. Handle user interactions with custom event handlers
 5. Maintain proper aspect ratios and responsive design
 
